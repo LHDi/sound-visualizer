@@ -1,14 +1,13 @@
-import React, { useEffect, createContext, useState, useRef, useCallback } from 'react'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
 import { Canvas, useThree } from 'react-three-fiber'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import DanceFloor from '../DanceFloor'
-import { DoubleSide } from 'three';
+import DanceFloor from '../DanceFloor';
 
 function nearestPow2(aSize) {
     return Math.pow(2, Math.ceil(Math.log(aSize) / Math.log(2)));
 }
 
-const CameraController = (props) => {
+const CameraController = () => {
     const { camera, gl } = useThree();
     useEffect(
         () => {
@@ -33,6 +32,7 @@ const Visualizer = () => {
         playedAt: 0
     });
     const [num, setNum] = useState(16);
+    const [track, setTrack] = useState('Lost Sky - Fearless [NCS Release]')
     const audioContext = useRef(new (window.AudioContext || window.webkitAudioContext)());
     const analyser = useRef(audioContext.current.createAnalyser());
     const currentSource = useRef(null);
@@ -40,7 +40,10 @@ const Visualizer = () => {
 
     useEffect(() => {
         analyser.current.fftSize = nearestPow2(num) * 2;
-        fetch('/Lost Sky - Fearless [NCS Release].mp3')
+    }, [num])
+
+    useEffect(() => {
+        fetch("/" + track + ".mp3")
             .then((res) => {
                 res.arrayBuffer().then((value => {
                     audioContext.current.decodeAudioData(value)
@@ -49,8 +52,18 @@ const Visualizer = () => {
                             setReady(true);
                         });
                 }))
-            })
-    }, [num]);
+            });
+        return () => {
+            if (playerOptions.current.playing) play();
+            currentBuffer.current = null;
+            playerOptions.current = {
+                playing: false,
+                pausedAt: 0,
+                playedAt: 0
+            };
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [track]);
 
     const play = useCallback(
         () => {
@@ -74,28 +87,51 @@ const Visualizer = () => {
 
     return (
         <>
-            <button style={{
+            <div style={{
                 color: "black",
                 position: "absolute",
                 top: "20px",
                 left: "50%",
                 transform: "translateX(-50%)",
                 zIndex: 10,
-                background: "none",
-                border: "none",
-                cursor: "pointer"
-            }}
-                onClick={() => {
-                    if (playerOptions.current.playing)
+            }}>
+                <button
+                    style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: "1.1em",
+                        color: "#222"
+                    }}
+                    onClick={() => {
+                        if (playerOptions.current.playing)
+                            play();
+                        playerOptions.current = {
+                            playing: false,
+                            pausedAt: 0,
+                            playedAt: 0
+                        };
                         play();
-                    playerOptions.current = {
-                        playing: false,
-                        pausedAt: 0,
-                        playedAt: 0
-                    };
-                    play();
-                }}
-            >Replay</button>
+                    }}
+                >Replay</button>
+                <select
+                    style={{ background: "none", border: "2px solid", borderRadius: "3px", fontSize: "1.1em" }}
+                    onChange={e => { setTrack(e.target.value) }}
+                >
+                    <option value="Lost Sky - Fearless [NCS Release]" defaultChecked>Lost Sky - Fearless [NCS Release]</option>
+                    <option value="DEAF KEV - Invincible _NCS Release_">DEAF KEV - Invincible _NCS Release_</option>
+                </select>
+                <select
+                    style={{ background: "none", border: "2px solid", borderRadius: "3px", fontSize: "1.1em" }}
+                    onChange={e => { setNum(e.target.value) }}
+                >
+                    <option value={16} defaultChecked>16</option>
+                    <option value={32}>32</option>
+                    <option value={64}>64</option>
+                    <option value={128}>128</option>
+                    <option value={256}>256</option>
+                </select>
+            </div>
             <Canvas
                 pixelRatio={window.devicePixelRatio}
                 invalidateFrameloop={false}

@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect, useCallback, createContext } from 'react';
-import { useThree, useFrame } from 'react-three-fiber';
+import React, { useRef, useState, createContext } from 'react';
+import { useFrame } from 'react-three-fiber';
 import { DoubleSide, BackSide } from 'three';
 import Dancer from '../Dancer';
 
@@ -31,7 +31,7 @@ const DanceFloor = ({ num, analyser, player, play, ...rest }) => {
             rotation={[0, 0, 0]}
             {...rest}
         >
-            <sphereBufferGeometry attach="geometry" args={[20]} />
+            <sphereBufferGeometry attach="geometry" args={[90]} />
             <meshToonMaterial attach="material" color={`hsl(${Math.max(...soundArray) + 100}, 100%, 50%)`} side={BackSide} />
             {
                 !player.current.playing &&
@@ -42,7 +42,7 @@ const DanceFloor = ({ num, analyser, player, play, ...rest }) => {
             }
             {
                 player.current.playing &&
-                <group position={[0, 0, Math.max(...soundArray) / 128]} onClick={play}>
+                <group position={[0, 0, Math.max(...soundArray) / 100]} onClick={play}>
                     <mesh position={[-.3, 0, 0]}>
                         <planeBufferGeometry attach="geometry" args={[.3, 1]} />
                         <meshToonMaterial attach="material" color={`hsl(${Math.max(...soundArray)}, 100%, 50%)`} side={DoubleSide} />
