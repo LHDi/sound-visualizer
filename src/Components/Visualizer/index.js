@@ -43,7 +43,7 @@ const Visualizer = () => {
     }, [num])
 
     useEffect(() => {
-        fetch("/" + track + ".mp3")
+        fetch(track + ".mp3")
             .then((res) => {
                 res.arrayBuffer().then((value => {
                     audioContext.current.decodeAudioData(value)
