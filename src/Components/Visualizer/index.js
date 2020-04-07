@@ -32,7 +32,7 @@ const Visualizer = () => {
         playedAt: 0
     });
     const [num, setNum] = useState(16);
-    const [track, setTrack] = useState('Lost Sky - Fearless [NCS Release]')
+    const [track, setTrack] = useState('Fearless')
     const audioContext = useRef(new (window.AudioContext || window.webkitAudioContext)());
     const analyser = useRef(audioContext.current.createAnalyser());
     const currentSource = useRef(null);
@@ -118,8 +118,8 @@ const Visualizer = () => {
                     style={{ background: "none", border: "2px solid", borderRadius: "3px", fontSize: "1.1em" }}
                     onChange={e => { setTrack(e.target.value) }}
                 >
-                    <option value="Lost Sky - Fearless [NCS Release]" defaultChecked>Lost Sky - Fearless [NCS Release]</option>
-                    <option value="DEAF KEV - Invincible _NCS Release_">DEAF KEV - Invincible _NCS Release_</option>
+                    <option value="Fearless" defaultChecked>Lost Sky - Fearless [NCS Release]</option>
+                    <option value="Invincible">DEAF KEV - Invincible _NCS Release_</option>
                 </select>
                 <select
                     style={{ background: "none", border: "2px solid", borderRadius: "3px", fontSize: "1.1em" }}
@@ -149,6 +149,7 @@ const Visualizer = () => {
                     <DanceFloor num={num} analyser={analyser.current} player={playerOptions} play={play} />
                 }
             </Canvas>
+            <span style={{ position: "absolute", zIndex: 1000, bottom: 0, left: 0 }}>Music Provided By <a href="https://ncsmusic.com/">NoCopyrightSounds</a></span>
         </>
     )
 }
