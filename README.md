@@ -21,7 +21,7 @@ launch
 npm run start
 ```
 ## Usage
-Just go [-> Here <-](http://lhd555.github.io/sound-visualizer)
+Just go [-> Here <-](http://lhdi.github.io/sound-visualizer)
 
 ## Contributing
 Pull requests are welcome.
